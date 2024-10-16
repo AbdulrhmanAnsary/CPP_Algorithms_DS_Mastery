@@ -1,4 +1,4 @@
-# CS Master Level 1: Algorithms and Data Structures by C++
+# CPP Algorithms Data Structures Mastery
 
 This repository contains implementations of algorithms and data structures in C++, inspired by the YouTube playlist **[Arabic] CS Master- Level 1- Algorithms & Data Structures**.
 
