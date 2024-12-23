@@ -1,6 +1,6 @@
 #include <iostream>
 #include <algorithm>
-#include "../workingWithArrays.h"
+#include "../data_structure_tools.h"
 
 using namespace std;
 
@@ -38,18 +38,18 @@ int main()
 {
     int size = 100;
     int nums[size];
-    WorkingWithArrays use;
+    DataStructureTools tools;
 
-    use.randomInsert(nums, size, true);
-    use.printArray(nums, size);
+    tools.randomFill(nums, size, true);
+    tools.printContainer(nums, size);
 
-    cout << "Is sorted: " << use.isSorted(nums, size) << endl;
+    cout << "Is sorted: " << tools.isSorted(nums, size) << endl;
 
     cout << "\nAfter quick sort:\n";
     quickSort(nums, 0, size - 1);
-    use.printArray(nums, size);
+    tools.printContainer(nums, size);
 
-    cout << "Is sorted: " << use.isSorted(nums, size) << endl;
+    cout << "Is sorted: " << tools.isSorted(nums, size) << endl;
 
     return 0;
 }
