@@ -1,99 +1,54 @@
 #include <iostream>
 #include <vector>
-#include <cassert>
-#include "myLib/data_structure_tools.h"
 
 using namespace std;
 
-bool isMultiplicationValid(const vector<vector<int>> &nums1, const vector<vector<int>> &nums2)
+int minCostOfMatricesMultiplied(const vector<vector<vector<int>> *> &matrices)
 {
-    return nums1[0].size() == nums2.size();
-}
-
-vector<vector<int>> matricesMultiplied(const vector<vector<int>> &nums1, const vector<vector<int>> &nums2, bool keepOrder = true)
-{
-    bool canMultiply = isMultiplicationValid(nums1, nums2) || (!keepOrder && isMultiplicationValid(nums2, nums1));
-    assert(canMultiply && "MatricesMultiplicationError: You cant multiplied nums1 and nums2, they don't' have a common dimension");
-
-    if (!isMultiplicationValid(nums1, nums2))
-        return matricesMultiplied(nums2, nums1);
-
-    int rows = nums1.size();
-    int cols = nums2[0].size();
-    int common_dim = nums2.size();
-
-    // Initialized the result matrux
-    vector<vector<int>> result(rows, vector<int>(cols, 0));
-
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
-            for (int k = 0; k < common_dim; k++)
-                result[i][j] += nums1[i][k] * nums2[k][j];
-        }
-    }
-
-    return result;
-}
-
-int calcMatricesMultipliedTime(const vector<vector<int>> &nums1, const vector<vector<int>> &nums2, bool keepOrder = true)
-{
-    bool canMultiply = isMultiplicationValid(nums1, nums2) || (!keepOrder && isMultiplicationValid(nums2, nums1));
-    assert(canMultiply && "MatricesMultiplicationError: You cant multiplied nums1 and nums2, they don't' have a common dimension");
-
-    if (!isMultiplicationValid(nums1, nums2))
-        return nums2[0].size() * nums2.size() * nums1[0].size();
-
-    return nums1[0].size() * nums1.size() * nums2[0].size();
-}
-
-pair<int, int> getMatrixDimentions(const vector<vector<int>> &matrix)
-{
-    pair<int, int> dimentions = {matrix.size(), matrix[0].size()};
-
-    for (int row = 0; row < matrix.size(); row++)
-    {
-        if (dimentions.second < matrix[row].size())
-            dimentions.second = matrix[row].size();
-    }
-
-    return dimentions;
-}
-
-int minCostOfMatricesMultiplied(const vector<vector<vector<int>> *> &matrices, bool keepOrder = true)
-{
-    DataStructureTools tools;
+    // Check if the number of matrices is less than 2
     int matricesSize = matrices.size();
-    vector<vector<int>> db(matricesSize, vector<int>(matricesSize, -1));
+    if (matricesSize < 2)
+        return 0;
 
-    //for (auto matrix : matrices)
-    //{
-    //    tools.printContainer(*matrix), cout << endl;
-    //}
-
-    for (int i = 0; i < matricesSize; i++)
+    // Extract the dimensions of the matrices
+    vector<int> dimensions;
+    for (const auto &matrix : matrices)
     {
-        for (int j = 0; j < matricesSize; j++)
+        dimensions.push_back(matrix->size());
+    }
+    dimensions.push_back(matrices.back()->at(0).size()); // Add the number of columns of the last matrix
+
+    // Cost Calculation algorithm (Matrix Chain Multiplication)
+    vector<vector<int>> dp(matricesSize, vector<int>(matricesSize, INT_MAX));
+
+    // The diagonal of the DP table is filled with 0 as no cost is incurred when multiplying a matrix by itself
+    for (int i = 0; i < matricesSize; i++)
+        dp[i][i] = 0;
+
+    // Iterate over the length of the subgroups (starting from 2 matrices to the total number of matrices)
+    for (int len = 2; len <= matricesSize; len++)
+    {
+        // The starting point of the subgroup
+        for (int i = 0; i <= matricesSize - len; i++)
         {
-            if (i < j && keepOrder)
-                continue;
-            else if (i == j)
-                db[i][j] = 0;
-            else
+            // The endpoint of the subgroup
+            int j = i + len - 1;
+            // Try all possible points (k) to divide the chain into two parts and calculate the cost
+            for (int k = i; k < j; k++)
             {
-                for (int k = 0; k < j; k++)
-                {
-                    db[i][j] = db[i][j] + db[k + 1][j] + i * k * k;
-                }
+                int cost = dp[i][k] + dp[k + 1][j] + dimensions[i] * dimensions[k + 1] * dimensions[j + 1];
+                dp[i][j] = min(dp[i][j], cost);
             }
         }
     }
-    tools.printContainer(db), cout << endl;
+
+    // Return the minimum cost to multiply all matrices together
+    return dp[0][matricesSize - 1];
 }
 
 int main(int argc, char *argv[])
 {
+    // Example matrices to demonstrate matrix chain multiplication
     vector<vector<int>> nums1 =
         {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
          {11, 12, 13, 14, 15, 16, 17, 18, 19, 20},
@@ -148,12 +103,12 @@ int main(int argc, char *argv[])
          {465, 466, 467, 468, 469, 470, 471},
          {472, 473, 474, 475, 476, 478, 479},
          {480, 481, 482, 483, 484, 485, 486}};
-    vector<vector<vector<int>> *> matrices = {&nums1, &nums2, &nums3, &nums4, &nums5};
-    vector<vector<int>> result = matricesMultiplied(nums1, nums2, false);
-    DataStructureTools tools;
-    //minCostOfMatricesMultiplied(matrices);
 
-    tools.printContainer(result), cout << endl;
+    // Define a list of matrices to multiply
+    vector<vector<vector<int>> *> matrices = {&nums1, &nums2, &nums3, &nums4, &nums5};
+
+    // Output the minimum cost for matrix multiplication
+    cout << minCostOfMatricesMultiplied(matrices) << endl;
 
     return 0;
 }
