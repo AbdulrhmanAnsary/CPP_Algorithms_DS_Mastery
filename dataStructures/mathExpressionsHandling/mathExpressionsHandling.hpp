@@ -6,8 +6,6 @@
 template <typename T>
 bool isNum(const T &expression);
 
-void add_to_end_if(bool condition, std::string &target, std::string text);
-
 class OperatorsHandling
 {
   private:

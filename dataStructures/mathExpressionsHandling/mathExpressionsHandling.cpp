@@ -17,12 +17,6 @@ bool isNum(const T &expression)
         return false;
 }
 
-void add_to_end_if(bool condition, std::string &target, std::string text)
-{
-    if (condition)
-        target += text;
-}
-
 // Defining the operators' priorities, where "**" represents the process of the exponent
 std::map<std::string, int> OperatorsHandling::operatorsPriority = {{"+", 1}, {"-", 1}, {"*", 2}, {"/", 2}, {"**", 3}, {"(", 4}, {")", 4}};
 
@@ -39,14 +33,14 @@ int OperatorsHandling::getOperatorPriority(std::string expr)
 std::string ExpressionsHandling::toPrefix(const std::string &expression)
 {
     std::stack<std::string> exprStack;
-    std::string result; // to store the resulting tokens
+    std::string result = ""; // to store the resulting tokens
 
     // Pass the expression from the end to the beginning
     for (auto it = expression.rbegin(); it != expression.rend(); it++)
     {
         std::string op(1, *it); // Convert the character to string
 
-        if (op == " " && !result.empty() && result.back() == ' ')
+        if (op == " " && !result.empty() && result.front() == ' ')
             continue;
 
         // Check if there is a "**" coefficient
@@ -59,8 +53,11 @@ std::string ExpressionsHandling::toPrefix(const std::string &expression)
         bool isOperator = opHandling.isOperator(op); // Is op an operator or not
         if (!isOperator)
         {
-            // If it is not operator, it is part of the operation
-            result += op;
+            std::string nextChar(1, *(it + 1));
+            if (*it != ' ' && it + 1 != expression.rend() && opHandling.isOperator(nextChar))
+                result = " " + op + result;
+            else
+                result = op + result;
         }
         else if (!exprStack.empty() && exprStack.top() != ")" && op != ")")
         {
@@ -70,12 +67,15 @@ std::string ExpressionsHandling::toPrefix(const std::string &expression)
                 // When facing "(" in the reverse traffic, we are looking for ")" in the stack
                 while (!exprStack.empty() && exprStack.top() != ")")
                 {
-                    add_to_end_if(!result.empty() && result.back() != ' ', result, " ");
-                    result += exprStack.top() + " "; // Add the operator with space to result
+                    if (!result.empty() && result.front() != ' ')
+                        result = " " + result;
+                    result = exprStack.top() + result; // Add the operator with space to result
                     exprStack.pop();
                 }
                 if (!exprStack.empty())
                 {
+                    if (result.front() != ' ')
+                        result = " " + result;
                     exprStack.pop(); // remove ")"
                 }
             }
@@ -84,33 +84,33 @@ std::string ExpressionsHandling::toPrefix(const std::string &expression)
                 // Compare the operators' priorities in the stack
                 while (!exprStack.empty() && opHandling.getOperatorPriority(op) < opHandling.getOperatorPriority(exprStack.top()))
                 {
-                    add_to_end_if(!result.empty() && result.back() != ' ', result, " ");
-                    result += exprStack.top() + " ";
+                    if (!result.empty() && result.front() != ' ')
+                        result = " " + result;
+                    result = exprStack.top() + result;
                     exprStack.pop();
                 }
+                if (!result.empty() && result.front() != ' ')
+                    result = " " + result;
                 exprStack.push(op);
-                add_to_end_if(!result.empty() && result.back() != ' ', result, " ");
             }
         }
         else
         {
             exprStack.push(op);
-            add_to_end_if(!result.empty() && result.back() != ' ', result, " "); // Add a space between numbers if there is no space
         }
     }
 
-    add_to_end_if(!exprStack.empty(), result, " "); // Add a space to the end of numbers if there is operators in the stack
     // Add what's left in the stack to the tokens
     while (!exprStack.empty())
     {
-        result += exprStack.top();
+        if (!result.empty() && result.front() != ' ')
+            result = " " + result;
+        result = exprStack.top() + result;
         exprStack.pop();
-        add_to_end_if(!exprStack.empty(), result, " ");
     }
 
-    // Reverse the order of the tokens to get the correct starter expression
-    reverse(result.begin(), result.end());
+    if (result.back() == ' ')
+        result.pop_back();
 
     return result;
 }
-
