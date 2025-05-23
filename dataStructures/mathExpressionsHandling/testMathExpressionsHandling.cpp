@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
-#include "mathExpressionsHandling.hpp"
+// #include "mathExpressionsHandling.hpp" // Now included via testMathExpressionsHandling.hpp
+#include "testMathExpressionsHandling.hpp"
 
 // Function: runExpressionTests
 // Purpose: Tests an ExpressionsHandling method against multiple test cases.
