@@ -4,10 +4,7 @@
 #include <algorithm>
 
 template <class T, class Container, class Compare>
-void PriorityQueue<T, Container, Compare>::enqueue(const T &item) {
-  container.push_back(item);
-  std::push_heap(container.begin(), container.end(), compare);
-}
+void PriorityQueue<T, Container, Compare>::enqueue(const T &item) {}
 
 template <class T, class Container, class Compare>
 T PriorityQueue<T, Container, Compare>::dequeue() {}
