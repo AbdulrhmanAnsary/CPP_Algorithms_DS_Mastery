@@ -5,15 +5,30 @@
       "label": "build active file",
       "type": "shell",
       "command": "g++",
-      "args": [
-        "-g",
-        "${file}",
-        "-o",
-        "${fileDirname}/${fileBasenameNoExtension}"
-      ],
+      "args": ["-g", "-std=c++17", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}"],
       "group": {
         "kind": "build",
         "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "build active file (GoogleTest)",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-g",
+        "-std=c++17",
+        "${file}",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}",
+        "-lgtest",
+        "-lgtest_main",
+        "-pthread"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
       },
       "problemMatcher": ["$gcc"]
     }

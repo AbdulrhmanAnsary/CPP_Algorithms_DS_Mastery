@@ -7,7 +7,8 @@
 
 template <class T, class Container = std::vector<T>,
           class Compare = std::less<typename Container::value_type>>
-class IPriorityQueue {
+class IPriorityQueue
+{
 protected:
   Container container;
   Compare compare;
@@ -30,11 +31,13 @@ public:
 
 template <class T, class Container = std::vector<T>,
           class Compare = std::less<typename Container::value_type>>
-class PriorityQueue : public IPriorityQueue<T, Container, Compare> {
+class PriorityQueue : public IPriorityQueue<T, Container, Compare>
+{
 public:
   using Base = IPriorityQueue<T, Container, Compare>;
-  using Base::container;
+  using Base::Base;
   using Base::compare;
+  using Base::container;
 
   void enqueue(const T &item) override;
   T dequeue() override;
