@@ -9,8 +9,9 @@
 #include <stack>
 #include <vector>
 
-
-template <typename T> class Queue {
+template <typename T>
+class Queue
+{
 protected:
   std::stack<T> inStack, outStack;
   std::optional<T> front, rear;

@@ -9,25 +9,30 @@ const std::vector<std::string> testNames = {
     "Ahmed", "Saad", "Ramadan", "Karim", "Mostafa", "Tarek", "Fares"};
 
 // Test fixture class for queue tests
-class QueueTest : public ::testing::Test {
+class QueueTest : public ::testing::Test
+{
 protected:
   Queue<int> nums;
   Queue<std::string> names;
 
-  void SetUp() override {
+  void SetUp() override
+  {
     // Initialize queues before each test
     nums.enqueue(testNums);
     names.enqueue(testNames);
   }
 
-  void TearDown() override {
+  void TearDown() override
+  {
     // Cleanup if needed
   }
 };
 
 // ✅ Test: Dequeue all elements and check correctness
-TEST_F(QueueTest, DequeueAllElements) {
-  for (size_t i = 0; i < testNums.size(); ++i) {
+TEST_F(QueueTest, DequeueAllElements)
+{
+  for (size_t i = 0; i < testNums.size(); ++i)
+  {
     EXPECT_EQ(nums.dequeue(), testNums[i]);
     EXPECT_EQ(names.dequeue(), testNames[i]);
   }
@@ -36,7 +41,8 @@ TEST_F(QueueTest, DequeueAllElements) {
 }
 
 // ✅ Test: Initial state after setup
-TEST_F(QueueTest, InitiallyNotEmpty) {
+TEST_F(QueueTest, InitiallyNotEmpty)
+{
   EXPECT_FALSE(nums.empty());
   EXPECT_FALSE(names.empty());
   EXPECT_EQ(nums.getFront(), testNums[0]);
@@ -44,7 +50,8 @@ TEST_F(QueueTest, InitiallyNotEmpty) {
 }
 
 // ✅ Test: Enqueue single items and verify
-TEST_F(QueueTest, EnqueueSingleItems) {
+TEST_F(QueueTest, EnqueueSingleItems)
+{
   Queue<int> localQueue; // Independent queue for this test
 
   EXPECT_TRUE(localQueue.empty());
